@@ -2,7 +2,8 @@ from fastapi import FastAPI, HTTPException
 from typing import List
 import database
 import models
-from models import Movie, MovieCreate
+from lesson25.models import Movies
+from models import MovieCreate
 
 app = FastAPI()
 
@@ -10,23 +11,23 @@ app = FastAPI()
 def read_root():
     return {"message": "Welcome to the Movies CRUD API"}
 
-@app.post('/movies/', response_model = Movie)
+@app.post('/movies/', response_model = Movies)
 def create_movie(movie: MovieCreate):
     movie_id= database.create_movie(movie)
     return  models.Movies(id=movie_id, **movie.dict())
 
-@app.get("/movies/", response_model = List[Movie])
+@app.get("/movies/", response_model = List[Movies])
 def read_movies():
     return database.read_movies()
 
-@app.get("/movies/{movie_id}", response_model=Movie)
+@app.get("/movies/{movie_id}", response_model=Movies)
 def read_movie(movie_id: int):
     movie = database.read_movie(movie_id)
     if movie is None:
         raise HTTPException(status_code=404, detail = "Movie not found")
     return movie
 
-@app.put("/movies/{movie_id}", response_model=Movie)
+@app.put("/movies/{movie_id}", response_model=Movies)
 def update_movie(movie_id: int, movie: MovieCreate):
     updated = database.update_movie(movie_id, movie)
     if not updated:

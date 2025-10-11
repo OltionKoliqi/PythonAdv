@@ -1,6 +1,9 @@
 import sqlite3
 from models import Movie, MovieCreate
 
+from lesson24.main import connection, cursor
+
+
 def create_connection():
     connection = sqlite3.connect('movies.db')
     connection.row_factory = sqlite3.Row
@@ -17,7 +20,7 @@ def create_table():
         director TEXT NOT NULL
         )
     ''')
-    connection.commit()
+    Connection.commit()
     connection.close()
 
 create_table()
