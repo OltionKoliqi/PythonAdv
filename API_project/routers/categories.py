@@ -1,13 +1,11 @@
 import sqlite3
 from typing import List
 from streamlit import status
-from models.category import Category, CategoryCreate
-from database import get_db_connection
 from unicodedata import category
 
-from OOP.api_development.client import response
+from ..models.category import Category, CategoryCreate
+from ..database import get_db_connection
 from fastapi import APIRouter, HTTPException
-from lesson24.main import cursor
 
 router = APIRouter()
 
@@ -61,7 +59,7 @@ def update_category(category_id: int, category: CategoryCreate):
     conn.close()
     return Category(id = category_id, name = category.name)
 
-@router.delete("/categories/{category_id}", response_model=dic)
+@router.delete("/categories/{category_id}", response_model=dict)
 def delete_category(category_id: int):
     conn = get_db_connection
     cursor = conn.cursor()
