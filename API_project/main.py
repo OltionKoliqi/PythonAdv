@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from lesson24.main import cursor
 from routers import recipes, categories
 import os
 from dotenv import load_dotenv

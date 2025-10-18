@@ -2,9 +2,10 @@ from fileinput import close
 
 from fastapi import APIRouter, HTTPException
 from typing import List
+
 from ..models.recipe import Recipe, RecipeCreate
 from ..database import get_db_connection
-from pandas.io.sql import execute
+
 from streamlit import connection
 
 
@@ -12,12 +13,15 @@ from streamlit import connection
 router = APIRouter()
 
 def category_exists(category_id: int) -> bool:
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    cursor,execute("SELECT 1 FROM categories WHERE id = ?", (category_id))
-    results = cursor.fetchone()
-    connection.close()
-    return results is not None
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT 1 FROM categories WHERE id = ?", (category_id,))
+    result = cursor.fetchone()
+
+    conn.close()
+    return result is not None
+
 
 @router.get("/recipes/", response_model=List[Recipe])
 def get_recipes(cuisine: str = None, difficulty: str = None):
@@ -40,7 +44,7 @@ def get_recipes(cuisine: str = None, difficulty: str = None):
     return [Recipe(id = row[0], name=row[1], description = row[2], ingredients=row[3], instruction = row[4], cuisine = row[5], difficulty = row[6],category_id = row[7]) for row in recipes]
 
 
-@router.post("/recipes/", resopnse_model=Recipe)
+@router.post("/recipes/", response_model=Recipe)
 def create_recipe(recipe: RecipeCreate):
     if not category_exists(recipe.category_id):
         raise HTTPException(status_code=400, detail="Category does not exists")
@@ -77,7 +81,7 @@ def update_recipe(recipe_id: int, recipe: RecipeCreate):
 def delete_recipe(recipe_id: int):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM recipes WHERE id = ?" (recipe_id,))
+    cursor.execute("DELETE FROM recipes WHERE id = ?", (recipe_id,))
     if cursor.rowcount == 0:
         conn.close()
         raise HTTPException(status_code=404, detail="Category not found")
