@@ -2,8 +2,6 @@ import sqlite3
 import os
 from dotenv import load_dotenv
 
-from API_project.main import DATABASE_URL
-
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 

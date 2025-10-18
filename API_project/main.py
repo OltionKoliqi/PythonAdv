@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from lesson24.main import cursor
 from routers import recipes, categories
 import os
 from dotenv import load_dotenv
@@ -17,27 +16,28 @@ app.include_router(recipes.router)
 @app.on_event("startup")
 def startup():
     conn = get_db_connection()
-    cursor = conn.curosr()
+    cursor = conn.cursor()
 
     cursor.execute('''
-        CREATE TABLE if NOT EXISTS categories (
+        CREATE TABLE IF NOT EXISTS categories (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT UNIQUE NOT NULL
         )
     ''')
 
     cursor.execute('''
-        CREATE TABLE if NOT EXISTS recipes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT UNIQUE NOT NULL,
-            description TEXT,
-            ingredients TEXT,
-            cuisine TEXT,
-            difficulty TEXT,
-            category_id INTEGER,
-            FOREIGN KEY (category_id) REFERENCES categories (id)
-        )
-    ''')
+            CREATE TABLE IF NOT EXISTS recipes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                description TEXT,
+                ingredients TEXT,
+                instructions TEXT,
+                cuisine TEXT,
+                difficulty TEXT,
+                category_id INTEGER,
+                FOREIGN KEY (category_id) REFERENCES categories (id)
+            )
+        ''')
 
     conn.commit()
     conn.close()
@@ -45,26 +45,3 @@ def startup():
 @app.get('/')
 def read_root():
     return {"message": "FastAPI with SQLite project"}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
