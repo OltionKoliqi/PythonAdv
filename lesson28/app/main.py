@@ -14,8 +14,8 @@ init_db()
 def create_new_item(item: Item, api_key: str=Depends(get_api_key)):
     return create_item()
 
-@app.get("/items/", response_model=List[Item])
-def read_items(api_key: str=Depends(get_api_key)):
+@app.get("/items/", response_model=List[item])
+def read_iems(api_key: str=Depends(get_api_key)):
     return get_items()
 
 @app.get("/items/{item_id}", response_model=Item)
